@@ -1,24 +1,30 @@
-CREATE TABLE car (
-    id BIGSERIAL NOT NULL PRIMARY KEY,
-    make VARCHAR(100) NOT NULL,
-    model VARCHAR(100) NOT NULL,
-    price NUMERIC(19,2) NOT NULL
-);
-
 CREATE TABLE person (
-    id BIGSERIAL NOT NULL PRIMARY KEY,
-    first_name VARCHAR(50) NOT NULL,
-    last_name VARCHAR(50) NOT NULL,
-    gender VARCHAR(7) NOT NULL,
-    email VARCHAR(100),
-    date_of_birth DATE NOT NULL,
-    country_of_birth VARCHAR(50) NOT NULL,
-    car_id BIGINT REFERENCES car (id),
-    UNIQUE(car_id)
+    id                  BIGSERIAL NOT NULL PRIMARY KEY,
+    email               VARCHAR(100),
+    inventory_id        BIGINT REFERENCES inventory (id),
+    UNIQUE(inventory_id)
 );
 
-INSERT INTO person (first_name, last_name, gender, email, date_of_birth, country_of_birth) VALUES ('Felix', 'Anducho', 'Male', 'email01@email.com', '1995-08-29', 'Mexico');
-INSERT INTO person (first_name, last_name, gender, email, date_of_birth, country_of_birth) VALUES ('Derek', 'Hinojoza', 'Male', 'email@email.com', '1995-08-28', 'Mexico');
+CREATE TABLE inventory (
+    id                  BIGSERIAL NOT NULL PRIMARY KEY,
+);
 
-INSERT INTO car (make, model, price) VALUES ('Land Rover', 'Sterling', '87655.38');
-INSERT INTO car (make, model, price) VALUES ('GMC', 'Acadia', '17662.69');
+CREATE TABLE store (
+    id                  BIGSERIAL NOT NULL PRIMARY KEY,
+    store_description   VARCHAR(255),
+    store_tags          TEXT[],
+    inventory_id        BIGSERIAL NOT NULL
+    CONSTRAINT fk_inventory FOREIGN KEY(inventory_id) REFERENCES inventory(id)
+);
+
+CREATE TABLE item (
+    id                  BIGSERIAL NOT NULL PRIMARY KEY,
+    item_tags           TEXT[],
+    item_name           VARCHAR(125),
+    item_description    VARCHAR(255),
+    item_quantity       SMALLINT,
+    item_image          TEXT,
+    store_id            BIGINT NOT NULL
+    CONSTRAINT fk_store FOREIGN KEY(store_id) REFERENCES store(id)
+
+)
